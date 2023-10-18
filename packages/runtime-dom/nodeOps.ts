@@ -1,12 +1,16 @@
-import { RendererOptions } from "../runtime-core/renderer";
+import { RendererOptions } from "../runtime-core";
 
-export const nodeOps: Omit<RendererOptions, "patchProp"> = {
+export const nodeOps: Omit<RendererOptions<Node, Element>, "patchProp"> = {
   createElement: (tagName) => {
     return document.createElement(tagName);
   },
 
-  createText: (text: string) => {
+  createText: (text) => {
     return document.createTextNode(text);
+  },
+
+  setText: (node, text) => {
+    node.nodeValue = text;
   },
 
   setElementText(node, text) {
