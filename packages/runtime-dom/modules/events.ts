@@ -21,7 +21,7 @@ export function removeEventListener(
 }
 
 export function patchEvent(
-  el: Element & { _vei?: Record<string, Invoker | undefined>; },
+  el: Element & { _vei?: Record<string, Invoker | undefined> },
   rawName: string,
   value: EventValue | null
 ) {
