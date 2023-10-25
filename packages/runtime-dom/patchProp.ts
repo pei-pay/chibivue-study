@@ -1,6 +1,6 @@
 import { RendererOptions } from "../runtime-core";
-import { patchEvent } from "./modules/events";
 import { patchAttr } from "./modules/attrs";
+import { patchEvent } from "./modules/events";
 
 type DOMRendererOptions = RendererOptions<Node, Element>;
 
