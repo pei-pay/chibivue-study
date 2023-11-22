@@ -1,5 +1,11 @@
 import { ReactiveEffect } from "../reactivity";
-import { Component, ComponentInternalInstance, InternalRenderFunction, createComponentInstance } from "./component";
+import {
+  Component,
+  ComponentInternalInstance,
+  InternalRenderFunction,
+  createComponentInstance,
+} from "./component";
+import { initProps, updateProps } from "./componentProps";
 import { VNode, Text, normalizeVNode, createVNode } from "./vnode";
 
 export type RootRenderFunction<HostElement = RendererElement> = (
@@ -63,9 +69,15 @@ export function createRenderer(options: RendererOptions) {
   const mountComponent = (initialVNode: VNode, container: RendererElement) => {
     const instance: ComponentInternalInstance = (initialVNode.component =
       createComponentInstance(initialVNode));
+
+    const { props } = instance.vnode
+
+    // NOTE: propsをリアクティブにする かつ propsの型チェックを行う
+    initProps(instance, props);
+
     const component = initialVNode.type as Component;
     if (component.setup) {
-      instance.render = component.setup() as InternalRenderFunction;
+      instance.render = component.setup(instance.props) as InternalRenderFunction;
     }
     setupRenderEffect(instance, initialVNode, container);
   };
@@ -90,6 +102,7 @@ export function createRenderer(options: RendererOptions) {
           next.component = instance;
           instance.vnode = next;
           instance.next = null;
+          updateProps(instance, next.props)
         } else {
           next = vnode;
         }
@@ -109,7 +122,9 @@ export function createRenderer(options: RendererOptions) {
   };
 
   const updateComponent = (n1: VNode, n2: VNode) => {
-    // TODO:
+    const instance = (n2.component = n1.component!);
+    instance.next = n2;
+    instance.update();
   };
 
   const processElement = (n1: VNode | null, n2: VNode, container: RendererElement) => {
@@ -161,6 +176,7 @@ export function createRenderer(options: RendererOptions) {
     const c1 = n1.children as VNode[];
     const c2 = n2.children as VNode[];
 
+    // NOTE: patchChildren に関して、本来は key 属性などを付与して動的な長さの子要素に対応したりしないといけないのですが、今回は小さく virtual DOM を実装するのでその辺の実用性については触れてない
     for (let i = 0; i < c2.length; i++) {
       const child = (c2[i] = normalizeVNode(c2[i]));
       patch(c1[i], child, container);
@@ -180,7 +196,7 @@ export function createRenderer(options: RendererOptions) {
 
   const render: RootRenderFunction = (rootComponent, container) => {
     const vnode = createVNode(rootComponent, {}, []);
-    patch(null, vnode, container)
+    patch(null, vnode, container);
   };
 
   return { render };
