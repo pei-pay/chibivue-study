@@ -20,3 +20,5 @@ export const createApp = ((...args) => {
 
   return app;
 }) as CreateAppFunction<Element>;
+
+export * from "../runtime-core";
