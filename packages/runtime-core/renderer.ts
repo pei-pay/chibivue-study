@@ -2,10 +2,10 @@ import { ReactiveEffect } from "../reactivity";
 import {
   Component,
   ComponentInternalInstance,
+  InternalRenderFunction,
   createComponentInstance,
-  setupComponent,
 } from "./component";
-import { updateProps } from "./componentProps";
+import { initProps, updateProps } from "./componentProps";
 import { VNode, Text, normalizeVNode, createVNode } from "./vnode";
 
 export type RootRenderFunction<HostElement = RendererElement> = (
@@ -69,7 +69,18 @@ export function createRenderer(options: RendererOptions) {
   const mountComponent = (initialVNode: VNode, container: RendererElement) => {
     const instance: ComponentInternalInstance = (initialVNode.component =
       createComponentInstance(initialVNode));
-    setupComponent(instance)
+
+    const { props } = instance.vnode
+
+    // NOTE: propsをリアクティブにする かつ propsの型チェックを行う
+    initProps(instance, props);
+
+    const component = initialVNode.type as Component;
+    if (component.setup) {
+      instance.render = component.setup(instance.props, {
+        emit: instance.emit,
+      }) as InternalRenderFunction;
+    }
     setupRenderEffect(instance, initialVNode, container);
   };
 
