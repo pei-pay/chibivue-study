@@ -5,7 +5,6 @@ const app = createApp({
     // マウント後に DOM 操作をしたいので Promise.resolve で処理を遅らせる
     Promise.resolve(() => {
       const btn = document.getElementById('btn')
-      console.log("🚀 ~ Promise.resolve ~ btn:", btn)
       btn &&
         btn.addEventListener('click', () => {
           const h2 = document.getElementById('hello')
