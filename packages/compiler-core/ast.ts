@@ -7,6 +7,7 @@ export const enum NodeTypes {
   TEXT,
   INTERPOLATION,
   ATTRIBUTE,
+  DIRECTIVE,
 }
 
 // 全ての Node は type と loc を持っています。
@@ -21,18 +22,27 @@ export interface Node {
 export interface ElementNode extends Node {
   type: NodeTypes.ELEMENT
   tag: string // eg. "div"
-  props: Array<AttributeNode> // eg. { name: "class", value: { content: "container" } }
+  props: Array<AttributeNode | DirectiveNode> // eg. { name: "class", value: { content: "container" } }, { name: "on", arg: "click", exp="increment" }
   children: TemplateChildNode[]
   isSelfClosing: boolean // eg. <img /> -> true
 }
 
-// ElementNode が持つ属性です。
-// ただの Record<string, string> と表現してしまってもいいのですが、
-// Vue に倣って name(string) と value(TextNode) を持つようにしています。
+// ElementNode が持つ属性。
+// ただの Record<string, string> と表現してしまってもいいが、
+// Vue に倣って name(string) と value(TextNode) を持つようにしている。
 export interface AttributeNode extends Node {
   type: NodeTypes.ATTRIBUTE
   name: string
   value: TextNode | undefined
+}
+
+export interface DirectiveNode extends Node {
+  type: NodeTypes.DIRECTIVE
+  // v-name:arg="exp" というような形式で表すことにする。
+  // eg. v-on:click="increment"の場合は { name: "on", arg: "click", exp="increment" }
+  name: string
+  arg: string
+  exp: string
 }
 
 export type TemplateChildNode = ElementNode | TextNode | InterpolationNode
