@@ -2,8 +2,8 @@ import { createApp } from 'chibivue'
 
 const app = createApp({
   setup() {
-    // マウント後に DOM 操作をしたいので Promise.resolve で処理を遅らせる
-    Promise.resolve(() => {
+    // マウント後に DOM 操作をしたいので setTimeout で処理を遅らせる
+    setTimeout(() => {
       const btn = document.getElementById('btn')
       btn &&
         btn.addEventListener('click', () => {
