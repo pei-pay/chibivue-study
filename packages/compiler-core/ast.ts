@@ -5,6 +5,7 @@
 export const enum NodeTypes {
   ELEMENT,
   TEXT,
+  INTERPOLATION,
   ATTRIBUTE,
 }
 
@@ -34,11 +35,17 @@ export interface AttributeNode extends Node {
   value: TextNode | undefined
 }
 
-export type TemplateChildNode = ElementNode | TextNode
+export type TemplateChildNode = ElementNode | TextNode | InterpolationNode
 
 export interface TextNode extends Node {
   type: NodeTypes.TEXT
   content: string
+}
+
+// マスタッシュのnode
+export interface InterpolationNode extends Node {
+  type: NodeTypes.INTERPOLATION
+  content: string // マスタッシュの中に記述された内容
 }
 
 // location の情報です。 Node はこの情報を持ちます。

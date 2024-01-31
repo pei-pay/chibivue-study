@@ -20,11 +20,12 @@ export interface ComponentInternalInstance {
   propsOptions: Props;
   props: Data;
   emit: (event: string, ...args: any[]) => void;
+  setupState: Data;
 
   isMounted: boolean;
 }
 export type InternalRenderFunction = {
-  (): VNodeChild;
+  (ctx: Data): VNodeChild;
 };
 
 export function createComponentInstance(
@@ -44,6 +45,7 @@ export function createComponentInstance(
     propsOptions: type.props || {},
     props: {},
     emit: null!,
+    setupState: {},
 
     isMounted: false,
   };
@@ -59,9 +61,17 @@ export const setupComponent = (instance: ComponentInternalInstance) => {
 
   const component = instance.type as Component;
   if (component.setup) {
-    instance.render = component.setup(instance.props, {
+    const setupResult = component.setup(instance.props, {
       emit: instance.emit,
     }) as InternalRenderFunction;
+
+    if(typeof setupResult === 'function') {
+      instance.render = setupResult;
+    } else if (typeof setupResult === 'object') {
+      instance.setupState = setupResult;
+    } else {
+      // do nothing
+    }
   }
 
   if (compile && !component.render) {

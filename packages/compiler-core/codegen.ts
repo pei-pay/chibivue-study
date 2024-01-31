@@ -1,13 +1,16 @@
-import { ElementNode, NodeTypes, TemplateChildNode, TextNode } from './ast'
+import { ElementNode, InterpolationNode, NodeTypes, TemplateChildNode, TextNode } from './ast'
 
 export const generate = ({
   children,
 }: {
   children: TemplateChildNode[]
 }): string => {
-  return `return function render() {
-  const { h } = ChibiVue;
-  return ${genNode(children[0])};
+  // with(非推奨): https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/with
+  return `return function render(_ctx) {
+  with(_ctx) {
+    const { h } = ChibiVue;
+    return ${genNode(children[0])};
+  }
 }`
 }
 
@@ -17,6 +20,8 @@ const genNode = (node: TemplateChildNode): string => {
       return genElement(node)
     case NodeTypes.TEXT:
       return genText(node)
+    case NodeTypes.INTERPOLATION:
+      return genInterpolation(node)
     default:
       return ''
   }
@@ -30,4 +35,8 @@ const genElement = (el: ElementNode): string => {
 
 const genText = (text: TextNode): string => {
   return `\`${text.content}\``
+}
+
+const genInterpolation = (node: InterpolationNode): string => {
+  return `${node.content}`
 }
