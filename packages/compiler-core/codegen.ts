@@ -8,14 +8,19 @@ import {
   TemplateChildNode,
   TextNode,
 } from "./ast";
+import { CompilerOptions } from "./options";
 
-export const generate = ({ children }: { children: TemplateChildNode[] }): string => {
-  // with(非推奨): https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/with
-  return `return function render(_ctx) {
-  with(_ctx) {
-    const { h } = ChibiVue;
-    return ${genNode(children[0])};
-  }
+export const generate = (
+  {
+    children,
+  }: {
+    children: TemplateChildNode[];
+  },
+  option: Required<CompilerOptions>,
+): string => {
+  return `${option.isBrowser ? 'return ' : ''}function render(_ctx) {
+  const { h } = ChibiVue;
+  return ${genNode(children[0])};
 }`;
 };
 
@@ -49,17 +54,17 @@ const genInterpolation = (node: InterpolationNode): string => {
 const genProp = (prop: AttributeNode | DirectiveNode): string => {
   switch (prop.type) {
     case NodeTypes.ATTRIBUTE:
-      return `${prop.name}: "${prop.value?.content}"`
+      return `${prop.name}: "${prop.value?.content}"`;
     case NodeTypes.DIRECTIVE: {
       switch (prop.name) {
         case 'on':
-          return `${toHandlerKey(prop.arg)}: ${prop.exp}`
+          return `${toHandlerKey(prop.arg)}: ${prop.exp}`;
         default:
           // TODO: other directives
-          throw new Error(`unexpected directive name. got "${prop.name}"`)
+          throw new Error(`unexpected directive name. got "${prop.name}"`);
       }
     }
     default:
-      throw new Error(`unexpected prop type.`)
+      throw new Error(`unexpected prop type.`);
   }
-}
+};

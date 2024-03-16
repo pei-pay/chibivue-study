@@ -1,6 +1,7 @@
 import type { Plugin } from 'vite';
 import { createFilter } from 'vite';
 import { parse } from '../../compiler-sfc';
+import { compile } from '../../compiler-dom';
 
 export default function vitePluginChibivue(): Plugin {
   const filter = createFilter(/\.vue$/);
@@ -10,12 +11,20 @@ export default function vitePluginChibivue(): Plugin {
 
     transform(code, id) {
       if (!filter(id)) return;
+
+      const outputs = [];
+      outputs.push("import * as ChibiVue from 'chibivue'\n");
+
       const { descriptor } = parse(code, { filename: id });
-      console.log(
-        '🚀 ~ file: index.ts:14 ~ transform ~ descriptor:',
-        descriptor,
-      );
-      return { code: `export default {}` };
+      const templateCode = compile(descriptor.template?.content ?? '', {
+        isBrowser: false,
+      });
+      outputs.push(templateCode);
+
+      outputs.push('\n');
+      outputs.push(`export default { render }`);
+
+      return { code: outputs.join('\n') };
     },
   };
 }
