@@ -11,7 +11,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "vite": "^4.3.9",
-    "@types/node": "^20.3.3"
+    "@types/node": "^20.3.3",
+    "vite": "^4.3.9"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.24.0",
+    "magic-string": "^0.30.8"
   }
 }
