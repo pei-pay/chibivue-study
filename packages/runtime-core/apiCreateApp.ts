@@ -1,5 +1,3 @@
-// ~/packages/runtime-core apiCreateApp.ts
-
 import { Component } from './component';
 import { RootRenderFunction } from './renderer';
 
