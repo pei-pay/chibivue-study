@@ -1,18 +1,3 @@
-// {
-//   onClick() {
-//     alert('Hello world!');
-//   },
-// },
-
-// const vnode = {
-//   props: {
-//     'onClick()': {
-//       alert('Hello world!');
-//     }
-//   }
-// };
-
-
 interface Invoker extends EventListener {
   value: EventValue;
 }
@@ -35,6 +20,12 @@ export function removeEventListener(
   el.removeEventListener(event, handler);
 }
 
+/**
+ * 
+ * @param el エレメント
+ * @param rawName イベント名
+ * @param value イベント関数
+ */
 export function patchEvent(
   el: Element & { _vei?: Record<string, Invoker | undefined>; },
   rawName: string,

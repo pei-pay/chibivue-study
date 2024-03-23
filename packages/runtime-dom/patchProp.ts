@@ -1,5 +1,5 @@
 import { RendererOptions } from '../runtime-core';
-// import { patchAttr } from './modules/attrs';
+import { patchAttr } from './modules/attrs';
 import { patchEvent } from './modules/events';
 
 type DOMRendererOptions = RendererOptions<Node, Element>;
@@ -9,8 +9,9 @@ export const isOn = (key: string) => onRE.test(key);
 
 export const patchProp: DOMRendererOptions['patchProp'] = (el, key, value) => {
   if (isOn(key)) {
+    console.log(el, key, value);
     patchEvent(el, key, value);
   } else {
-    // patchAttr(el, key, value);
+    patchAttr(el, key, value);
   }
 };
