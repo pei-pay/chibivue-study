@@ -24,6 +24,7 @@ export type RootRenderFunction<HostElement = RendererElement> = (
 
 export function createRenderer(options: RendererOptions) {
   const {
+    patchProp: hostPatchProps,
     createElement: hostCreateElement,
     createText: hostCreateText,
     insert: hostInsert
@@ -32,6 +33,10 @@ export function createRenderer(options: RendererOptions) {
   function renderVnode(vnode: VNode | string) {
     if (typeof vnode === 'string') return hostCreateText(vnode);
     const el = hostCreateElement(vnode.type);
+
+    Object.entries(vnode.props).forEach(([key, value]) => {
+      hostPatchProps(el, key, value);
+    });
 
     for (const child of vnode.children) {
       const childEl = renderVnode(child);
