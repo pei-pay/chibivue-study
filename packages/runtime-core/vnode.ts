@@ -6,6 +6,7 @@ export interface VNode<HostNode = any> {
   type: VNodeTypes;
   props: VNodeProps | null;
   children: VNodeNormalizedChildren;
+  el: HostNode | null;
 }
 
 export interface VNodeProps {
@@ -23,7 +24,7 @@ export function createVNode(
   props: VNodeProps | null,
   children: VNodeNormalizedChildren,
 ): VNode {
-  const vnode: VNode = { type, props, children: children };
+  const vnode: VNode = { type, props, children: children, el: undefined };
   return vnode;
 }
 
