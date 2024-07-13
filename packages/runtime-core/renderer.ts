@@ -1,6 +1,6 @@
 import { ReactiveEffect } from "../reactivity";
 import { Component, ComponentInternalInstance, InternalRenderFunction, createComponentInstance } from "./component";
-import { Text, VNode, normalizeVNode } from "./vnode";
+import { Text, VNode, createVNode, normalizeVNode } from "./vnode";
 
 export interface RendererOptions<HostNode = RendererNode, HostElement = RendererElement> {
   patchProp(el: HostElement, key: string, value: any): void;
@@ -53,7 +53,6 @@ export function createRenderer(options: RendererOptions) {
       updateComponent(n1, n2)
     }
   }
-
 
   const mountComponent = (initialVNode: VNode, container: RendererElement) => {
     const instance: ComponentInternalInstance = (initialVNode.component = createComponentInstance(initialVNode))
@@ -178,19 +177,8 @@ export function createRenderer(options: RendererOptions) {
   };
 
   const render: RootRenderFunction = (rootComponent, container) => {
-    const componentRender = rootComponent.setup!();
-
-    let n1: VNode | null = null;
-
-    const updateComponent = () => {
-      // FIXME: n2 is any
-      const n2 = componentRender();
-      patch(n1, n2, container);
-      n1 = n2;
-    };
-
-    const effect = new ReactiveEffect(updateComponent);
-    effect.run();
+    const vnode = createVNode(rootComponent, {}, [])
+    patch(null, vnode, container)
   };
 
   return { render };
