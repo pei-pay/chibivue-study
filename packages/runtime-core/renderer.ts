@@ -1,5 +1,6 @@
 import { ReactiveEffect } from "../reactivity";
 import { Component, ComponentInternalInstance, InternalRenderFunction, createComponentInstance } from "./component";
+import { initProps, updateProps } from "./componentProps";
 import { Text, VNode, createVNode, normalizeVNode } from "./vnode";
 
 export interface RendererOptions<HostNode = RendererNode, HostElement = RendererElement> {
@@ -57,9 +58,12 @@ export function createRenderer(options: RendererOptions) {
   const mountComponent = (initialVNode: VNode, container: RendererElement) => {
     const instance: ComponentInternalInstance = (initialVNode.component = createComponentInstance(initialVNode))
 
+    const { props } = instance.vnode
+    initProps(instance, props)
+
     const component = initialVNode.type as Component
     if(component.setup) {
-      instance.render = component.setup() as InternalRenderFunction
+      instance.render = component.setup(instance.props) as InternalRenderFunction
     }
 
     setupRenderEffect(instance, initialVNode, container)
@@ -85,6 +89,7 @@ export function createRenderer(options: RendererOptions) {
           next.component = instance
           instance.vnode = next
           instance.next = null
+          updateProps(instance, next.props)
         } else {
           next = vnode
         }
