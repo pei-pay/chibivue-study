@@ -1,15 +1,14 @@
-import { ElementNode, NodeTypes, TemplateChildNode, TextNode } from "./ast";
+import { ElementNode, NodeTypes, TemplateChildNode, TextNode } from './ast';
 
 export const generate = ({
-  children
+  children,
 }: {
   children: TemplateChildNode[];
 }): string => {
-  console.log("🚀 ~ children:", children)
   return `return function render() {
-    const { h } = Chibivue
-    return ${genNode(children[0])};
-  }`;
+  const { h } = Chibivue;
+  return ${genNode(children[0])};
+}`;
 };
 
 const genNode = (node: TemplateChildNode): string => {
@@ -30,5 +29,5 @@ const genElement = (el: ElementNode): string => {
 };
 
 const genText = (text: TextNode): string => {
-  return `\`${text.content}\``
-}
+  return `\`${text.content}\``;
+};
