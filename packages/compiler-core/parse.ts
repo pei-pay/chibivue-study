@@ -1,4 +1,3 @@
-import { parse } from "path";
 import { ElementNode, NodeTypes, Position, TemplateChildNode, TextNode, SourceLocation, AttributeNode } from "./ast";
 
 
