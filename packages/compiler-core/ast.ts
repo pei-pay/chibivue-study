@@ -1,6 +1,7 @@
 export const enum NodeTypes {
   ELEMENT,
   TEXT,
+  INTERPOLATION,
   ATTRIBUTE,
 }
 
@@ -24,7 +25,12 @@ export interface AttributeNode extends Node {
   value: TextNode | undefined;
 }
 
-export type TemplateChildNode = ElementNode | TextNode;
+export type TemplateChildNode = ElementNode | TextNode | InterpolationNode;
+
+export interface InterpolationNode extends Node {
+  type: NodeTypes.INTERPOLATION
+  content: string
+}
 
 export interface TextNode extends Node {
   type: NodeTypes.TEXT;
