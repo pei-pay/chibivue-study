@@ -8,7 +8,7 @@ import * as runtimeDom from './runtime-dom'
 
 function compileToFunction(template: string): InternalRenderFunction {
   const code = compile(template)
-  return new Function('Chibivue', code)(runtimeDom)
+  return new Function('ChibiVue', code)(runtimeDom)
 }
 
 registerRuntimeCompiler(compileToFunction)

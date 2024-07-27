@@ -46,6 +46,6 @@ const app = createApp({
       </style>
     </div>
   `,
-})
+});
 
 app.mount('#app');
