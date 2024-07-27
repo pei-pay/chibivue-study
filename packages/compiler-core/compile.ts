@@ -6,4 +6,5 @@ export function baseCompile(template: string) {
   console.log("🚀 ~ baseCompile ~ parseResult:", parseResult)
   const code = generate(parseResult);
   return code;
+  return ''
 }

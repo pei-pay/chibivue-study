@@ -23,7 +23,7 @@ export interface ComponentInternalInstance {
 }
 
 export type InternalRenderFunction = {
-  (): VNodeChild
+  (ctx: Data): VNodeChild
 }
 
 export function createComponentInstance(vnode: VNode): ComponentInternalInstance {
